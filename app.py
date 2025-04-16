@@ -78,3 +78,20 @@ if uploaded_file:
             st.success("✅ Data successfully appended.")
     elif not validation_errors:
         st.info("No valid sheets found.")
+
+# Database viewer and export
+st.markdown("### 📁 View Existing Database Records")
+
+if st.button("Show All Records"):
+    conn = sqlite3.connect("storage_capex.db")
+    df_db = pd.read_sql_query("SELECT * FROM capex_data ORDER BY id DESC LIMIT 100", conn)
+    conn.close()
+    st.dataframe(df_db)
+
+    csv = df_db.to_csv(index=False)
+    st.download_button(
+        label="📥 Download CSV",
+        data=csv,
+        file_name="capex_data_export.csv",
+        mime="text/csv"
+    )
